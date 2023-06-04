@@ -1,0 +1,31 @@
+{% extends "./base.html" %}
+        
+{% block content %}
+
+    
+    {% if user %}
+
+        <h2>Bienvenido {{ user.nombre_usuario }}</h2>
+
+    {% endif %}
+
+
+    {% for producto in productos %}
+    
+
+    <a href="{% url 'producto' producto.nombre_prod %}">
+
+        <img src="{{producto.imagen.url}}" alt="">
+
+        <p>{{producto.nombre_prod}}</p>
+
+
+    </a>
+
+
+    {% endfor %}
+
+    
+
+{% endblock %}
+

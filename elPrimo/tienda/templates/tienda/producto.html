@@ -1,0 +1,26 @@
+{% extends "./base.html" %}
+        
+{% block content %}
+
+    
+    <p>{{ producto.nombre_prod }}</p>
+
+    <img src="{{producto.imagen.url}}" alt="">
+
+    <!-- <a href="{% url 'Addcarro' producto.id %}">Agregar al carro</a> -->
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <input type="text" name="cantidad" value="1">
+
+        <label for="cantidad">Unidades del producto que desea</label>
+
+        <button type="submit">Agregar al carro</button>
+
+        </form>
+    
+    
+
+{% endblock %}

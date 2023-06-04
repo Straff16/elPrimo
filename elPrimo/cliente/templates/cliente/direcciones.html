@@ -1,0 +1,52 @@
+{% extends "tienda/base.html" %}
+
+{% block content %}
+
+    <h2>Libreta de direcciones</h2>
+
+
+    {% if direcciones %}
+
+    <p>Direcciones registradas:</p>
+
+        {% for direccion in direcciones %}
+
+            <p>{{ direccion.municipio }}</p>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No ha registrado ninguna direccion</p>
+
+
+    {% endif %}
+        
+
+
+
+
+
+    <form method="POST" action="">
+
+        {% csrf_token %}
+
+        {% for field in form %}
+
+        <p>
+            {% if field.errors %}
+            <ul class="errorlist">
+                {% for error in field.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+             {{ field.label_tag }} {{ field }}
+        </p>
+        {% endfor %}
+
+        <input type="submit" label="Crear nueva direccion">
+
+    </form>
+
+{% endblock %}

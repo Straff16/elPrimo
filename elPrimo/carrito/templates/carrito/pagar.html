@@ -1,0 +1,52 @@
+{% extends "tienda/base.html" %}
+
+
+{% block content %}
+
+    <p>Elija una direccion de envio</p>
+
+    {% if direcciones %}
+
+    <p>Direcciones registradas:</p>
+
+    <form method="POST" action="">
+
+        {% csrf_token %}
+
+        {% for direccion in direcciones %}        
+
+            <input type="radio" name="direccion" id="{{ direccion.id }}" value="{{ direccion.id }}">
+            <p>municipio: {{ direccion.municipio }}</p>
+
+
+        {% endfor %}
+
+        <p>Metodos de envio</p>
+
+        <input type="radio" name="despacho" id="0" value="0">
+        <label for="tienda">Recoger la compra en la tienda</label>
+         
+            {% if total > 80 %}
+                <input type="radio" name="despacho" id="1" value="1">
+                <label for="despacho">Si su compra es superior a $80 puede solicitar el envio a la direccion que usted seleccione</label>
+            {% endif %}
+
+        <button type="submit">Enviar</button>
+
+        </form>
+
+    {% else %}
+
+        <p>Usted no tiene direcciones registradas</p>
+        <a href="{% url 'direcciones' %}">Haga clic para registrar una direccion</a>
+
+
+    {% endif %}
+
+
+
+
+
+
+
+{% endblock %}

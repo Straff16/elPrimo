@@ -1,0 +1,44 @@
+{% extends "tienda/base.html" %}
+
+
+{% block content %}
+
+
+    {% if total > 0 %}
+
+        <p>AAAAAAAAAA</p>
+
+        {% for producto, item in contexto %}
+
+            <a href="{% url 'producto' producto.nombre_prod %}">
+
+            <p>{{producto.nombre_prod}}</p>
+
+            </a>
+            
+           <p>cantidad: {{ item.cantidad }}</p>
+
+            <p>Precio: {{ producto.precio }}</p>
+
+            <p>Subtotal: {% widthratio producto.precio 1 item.cantidad %}</p>
+
+            <a href="{% url 'Deletecarro' producto.id %}">Borrar {{ producto.nombre_prod }} del carrito</a>
+
+            <a href="{% url 'producto' producto.nombre_prod %}"> Actualizar producto </a>
+            
+        {% endfor %}
+
+            <p>Total del pedido: {{ total }}</p>
+
+            <a href="{% url 'Pagar' %}">Realizar compra</a>
+
+    {% else %}
+
+        <p>El carrito esta vacio</p>
+
+    {% endif %}
+
+
+
+
+{% endblock %}

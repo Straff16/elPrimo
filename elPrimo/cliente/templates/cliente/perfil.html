@@ -1,0 +1,18 @@
+{% extends "tienda/base.html" %}
+
+
+{% block content %}
+
+    
+    {% if user %}
+
+        <h2>Perfil</h2>
+
+        <p>Nombre de usuario:  {{ user.nombre_usuario }} </p>
+        <p>Correo: {{ user.correo }}</p>
+
+    {% endif %}
+
+    <a href="{% url 'direcciones' %}">Libreta de direcciones</a>
+
+{% endblock %}

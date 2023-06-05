@@ -49,4 +49,10 @@ def producto(request, nombre_producto):
     
     return render(request, 'tienda/producto.html', {'producto': producto})
 
+def buscador(request):
+    if request.GET:
+        nombre = request.GET.get('buscador')
+        productos = Producto.objects.filter(nombre_prod__icontains = nombre).all()
+        return render(request, 'tienda/home.html', {'productos': productos})
+
 

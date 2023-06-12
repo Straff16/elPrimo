@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from .models import Producto
 from carrito.models import ItemsCarro, Carro
 from carrito.views import Addcarro
+
 #from cliente.models import Usuario
 
 def tienda(request):

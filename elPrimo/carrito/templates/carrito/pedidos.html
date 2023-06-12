@@ -1,0 +1,17 @@
+{% extends "tienda/base.html" %}
+
+
+{% block content %}
+
+    <p>Lista de Pedidos</p>
+
+    {% for factura, pedido in pedidos %}
+
+        <p>Numero de pedido: {{ factura.numero_factura }}</p>
+
+        <p>Estatus del pedido: {{ pedido.estatus }}</p>
+
+    {% endfor %}
+
+
+{% endblock %}

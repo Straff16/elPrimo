@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Carro, ItemsCarro
-from tienda.models import Producto, Encabezado_Factura, Detalle_factura
+from tienda.models import Producto, Encabezado_Factura, Detalle_factura, Pedido
 from cliente.models import Info_Usuario, Usuario
 import random
 #from cliente.models import Usuario
@@ -54,7 +54,6 @@ def Vercarro(request):
          total = 0
          carro = Carro.objects.filter(cliente = usuario_id, pagado = False).first()
          items = ItemsCarro.objects.filter(Idcarro = carro.id).all()
-         print(len(items))
          for i in items:
              ids.append(i.producto.id)
          productos = Producto.objects.filter(id__in = ids).all()
@@ -88,104 +87,79 @@ def pagar(request):
     direcciones = Info_Usuario.objects.filter(id_usuario = request.session.get('user_id')).all()
     total = request.session.get('total')
     
-
     if request.POST:
         cliente = Usuario.objects.get(id = request.session.get('user_id'))
         carro = Carro.objects.filter(cliente = cliente.id, pagado = False).first()
-        direccion = request.POST.get('direccion')
-        despacho = Info_Usuario.objects.get(id = direccion)
 
-        #Si el total es mayor a 80 y ell usuario quiere despacho
+        #Si el total es mayor a 80 y el usuario quiere despacho
         if total > 80 and request.POST.get('despacho') == '1': 
-            numero = random.getrandbits(32)
-            Encabezado_Factura(
-                numero_factura = numero,
-                id_cliente = cliente,
-                base_imp = 1,
-                iva = 12,
-                flete = True,
-                total = total,
-                direccion_despacho = despacho
-            ).save()
 
-            encabezado = Encabezado_Factura.objects.get(numero_factura = numero)
+            direccion = request.POST.get('direccion')
+            despacho = Info_Usuario.objects.get(id = direccion)
 
-            items = ItemsCarro.objects.filter(Idcarro = carro.id).all()
+            registroPago(cliente, despacho, total, carro, flete=True)
 
-            for i in items:
-
-                Detalle_factura(
-                    id_encabezado = encabezado,
-                    id_prod = i.producto,
-                    cantidad = i.cantidad
-
-                ).save()
-
-            carro.pagado = 1
+            carro.pagado = True
             carro.save()
             Carro(cliente = cliente).save()
             return redirect('tienda')
         
         elif total > 80 and request.POST.get('despacho') == '0':
-            numero = random.getrandbits(32)
-            Encabezado_Factura(
-                numero_factura = numero,
-                id_cliente = cliente,
-                base_imp = 1,
-                iva = 12,
-                flete = False,
-                total = total,
-                direccion_despacho = None
-            ).save()
 
-            encabezado = Encabezado_Factura.objects.get(numero_factura = numero)
+            despacho = None
 
-            items = ItemsCarro.objects.filter(Idcarro = carro.id).all()
+            registroPago(cliente, despacho, total, carro, flete=False)
 
-            for i in items:
-
-                Detalle_factura(
-                    id_encabezado = encabezado,
-                    id_prod = i.producto,
-                    cantidad = i.cantidad
-
-                ).save()
-
-            carro.pagado = 1
+            carro.pagado = True
             carro.save()
             Carro(cliente = cliente).save()
             
             return redirect('Vercarro')
         
         else:
-            numero = random.getrandbits(32)
-            Encabezado_Factura(
-                numero_factura = numero,
-                id_cliente = cliente,
-                base_imp = 1,
-                iva = 12,
-                flete = False,
-                total = total,
-                direccion_despacho = None
-            ).save()
-
-            encabezado = Encabezado_Factura.objects.get(numero_factura = numero)
-
-            items = ItemsCarro.objects.filter(Idcarro = carro.id).all()
-
-            for i in items:
-
-                Detalle_factura(
-                    id_encabezado = encabezado,
-                    id_prod = i.producto,
-                    cantidad = i.cantidad
-
-                ).save()
-
-            carro.pagado = 1
+            despacho = None
+            registroPago(cliente, despacho, total, carro, flete=False)
+            carro.pagado = True
             carro.save()
             Carro(cliente = cliente).save()
             return redirect('perfil')
 
-
     return render(request, 'carrito/pagar.html', {'direcciones': direcciones, 'total': total})
+
+
+def pedidos(request):
+    cliente = request.session.get('user_id')
+    #Obtener todas las facturas generadas por el cliente
+    encabezado = Encabezado_Factura.objects.filter(id_cliente = cliente).all()
+    #Guardar en una lista todas las ids de las facturas
+    ids = [p.id for p in encabezado]
+    #Obtener todos los pedidos de un cliente usando la lista de ids de facturas y que el estatus sea false
+    pedidos = Pedido.objects.filter(id_encabezado__in = ids, estatus = False).all()
+    contexto = zip(encabezado, pedidos)
+    return render(request, 'carrito/pedidos.html', {'pedidos': contexto})
+
+
+def registroPago(cliente, despacho, total, carro, flete) -> None:
+    numero = random.getrandbits(32)
+    encabezado = Encabezado_Factura(
+        numero_factura = numero,
+        id_cliente = cliente,
+        iva = 12,
+        flete = flete,
+        total = total,
+        direccion_despacho = despacho
+    ).save()
+
+    encabezado = Encabezado_Factura.objects.get(numero_factura = numero)
+
+    items = ItemsCarro.objects.filter(Idcarro = carro.id).all()
+
+    for i in items:
+
+        Detalle_factura(
+            id_encabezado = encabezado,
+            id_prod = i.producto,
+            cantidad = i.cantidad
+            ).save()
+        
+    Pedido(id_encabezado = encabezado).save()

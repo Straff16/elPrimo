@@ -20,8 +20,6 @@ class Producto(models.Model):
     categoria = models.ForeignKey(CategoriaProd, on_delete=models.CASCADE)
     imagen = models.ImageField(upload_to='tienda/', null=True, blank=True)
     precio = models.FloatField()
-    stock_max = models.IntegerField()
-    stock_min = models.IntegerField()
     cantidad = models.IntegerField()
     dimensiones = models.CharField(max_length=15)
     disponibilidad = models.BooleanField(default=True)
@@ -36,7 +34,6 @@ class Encabezado_Factura(models.Model):
     numero_factura = models.CharField(max_length=16)
     fecha_emision = models.DateTimeField(auto_now_add=True)
     id_cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    base_imp = models.FloatField()
     iva = models.FloatField()
     flete = models.BooleanField()
     total = models.FloatField()
@@ -55,7 +52,6 @@ class Almacen(models.Model):
         verbose_name = 'Almacen'
         verbose_name_plural = 'Almacenes'
 
-
 class Distribuidor(models.Model):
     nombre = models.CharField(max_length=60)
     rif = models.IntegerField(7)
@@ -67,7 +63,9 @@ class Distribuidor(models.Model):
         verbose_name = 'Distribuidor'
         verbose_name_plural = 'Distribuidores'
 
-    #upload_to='tienda', null=True, blank=True
+class Pedido(models.Model):
+    id_encabezado = models.ForeignKey(Encabezado_Factura, on_delete=models.CASCADE)
+    estatus = models.BooleanField(default=False)
 
 
 

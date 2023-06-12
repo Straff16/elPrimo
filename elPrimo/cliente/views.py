@@ -41,7 +41,7 @@ def login(request):
             print('PRIMER IF')
             
             if form.is_valid():
-                print('SEGUNDO IF')
+                print('SEGUNDO IF LOGIN')
                 user = Usuario.objects.filter(nombre_usuario = request.POST.get('usuario')).first()
                 print(type(user.password))
                 print(type(form.cleaned_data.get('password')))
@@ -49,12 +49,13 @@ def login(request):
                     print('TERCER Y ULTIMO IF')
 
                     request.session['usuario'] = user.nombre_usuario
-                    a = request.session['user_id'] = user.id
-                    print(a)
+                    request.session['user_id'] = user.id
                     return redirect('tienda')
                 
                 else:
                     redirect('login')
+    else:
+        redirect('tienda')
 
     
     return render(request, 'cliente/login.html', {'form': form})

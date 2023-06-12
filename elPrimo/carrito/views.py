@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect
 from .models import Carro, ItemsCarro
 from tienda.models import Producto, Encabezado_Factura, Detalle_factura, Pedido
 from cliente.models import Info_Usuario, Usuario
+from django.http import HttpResponse
+from .utils import render_to_pdf
+from django.core import mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 import random
 #from cliente.models import Usuario
 
@@ -26,6 +31,7 @@ def Addcarro(usuario_id, producto, cantida):
         aux = Carro.objects.filter(cliente = usuario_id, pagado = False).first()
         #prod = Producto.objects.get(id = id_producto)
         #print(f'AUXILIAR {aux.id}')
+
         items = ItemsCarro.objects.filter(Idcarro = aux.id, producto = id_producto).first()
         #print(items)
         if not items:
@@ -90,39 +96,44 @@ def pagar(request):
     if request.POST:
         cliente = Usuario.objects.get(id = request.session.get('user_id'))
         carro = Carro.objects.filter(cliente = cliente.id, pagado = False).first()
+        correo = request.session.get('email')
 
         #Si el total es mayor a 80 y el usuario quiere despacho
         if total > 80 and request.POST.get('despacho') == '1': 
 
             direccion = request.POST.get('direccion')
-            despacho = Info_Usuario.objects.get(id = direccion)
+            if direccion:
+                despacho = Info_Usuario.objects.get(id = direccion)
+            else:
+                despacho = None
+            
 
-            registroPago(cliente, despacho, total, carro, flete=True)
+            registroPago(cliente, despacho, total, carro, correo, flete=True)
 
             carro.pagado = True
             carro.save()
             Carro(cliente = cliente).save()
-            return redirect('tienda')
+            return redirect('Pedidos')
         
         elif total > 80 and request.POST.get('despacho') == '0':
 
             despacho = None
 
-            registroPago(cliente, despacho, total, carro, flete=False)
+            registroPago(cliente, despacho, total, carro, correo, flete=False)
 
             carro.pagado = True
             carro.save()
             Carro(cliente = cliente).save()
             
-            return redirect('Vercarro')
+            return redirect('Pedidos')
         
         else:
             despacho = None
-            registroPago(cliente, despacho, total, carro, flete=False)
+            registroPago(cliente, despacho, total, carro, correo, flete=False)
             carro.pagado = True
             carro.save()
             Carro(cliente = cliente).save()
-            return redirect('perfil')
+            return redirect('Pedidos')
 
     return render(request, 'carrito/pagar.html', {'direcciones': direcciones, 'total': total})
 
@@ -138,8 +149,23 @@ def pedidos(request):
     contexto = zip(encabezado, pedidos)
     return render(request, 'carrito/pedidos.html', {'pedidos': contexto})
 
+'''
+def factura(request, numero_factura):
+    factura = Encabezado_Factura.objects.get(numero_factura = numero_factura)
+    detalle = Detalle_factura.objects.filter(id_encabezado = factura).all()
+    return render(request, 'carrito/factura.html', {'factura': factura, 'detalle': detalle})
+'''
 
-def registroPago(cliente, despacho, total, carro, flete) -> None:
+def facturapdf(request, numero_factura):
+    if request.session.get('username') is not None:
+        factura = Encabezado_Factura.objects.get(numero_factura = numero_factura)
+        detalle = Detalle_factura.objects.filter(id_encabezado = factura).all()
+        pdf = render_to_pdf('carrito/factura.html', {'factura': factura, 'detalle': detalle})
+        return HttpResponse(pdf, content_type='application/pdf')
+    else:
+        return redirect('login')
+
+def registroPago(cliente, despacho, total, carro, correo, flete) -> None:
     numero = random.getrandbits(32)
     encabezado = Encabezado_Factura(
         numero_factura = numero,
@@ -162,4 +188,17 @@ def registroPago(cliente, despacho, total, carro, flete) -> None:
             cantidad = i.cantidad
             ).save()
         
+    detalle = Detalle_factura.objects.get(id_encabezado = encabezado.id)
+
+    enviarEmail(encabezado, detalle, correo)
+    
     Pedido(id_encabezado = encabezado).save()
+
+def enviarEmail(encabezado, detalle, correo):
+    asunto = 'Compra confirmada'
+    html_message = render_to_string('carrito/correo.html', {'factura': encabezado, 'detalle': detalle})
+    plain_message = strip_tags(html_message)
+    from_email = 'From elprimosa24@gmail.com'
+    to = correo
+
+    mail.send_mail(asunto, plain_message, from_email, [to], html_message=html_message)

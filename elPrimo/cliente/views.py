@@ -50,6 +50,7 @@ def login(request):
 
                     request.session['usuario'] = user.nombre_usuario
                     request.session['user_id'] = user.id
+                    request.session['email'] = user.correo
                     return redirect('tienda')
                 
                 else:

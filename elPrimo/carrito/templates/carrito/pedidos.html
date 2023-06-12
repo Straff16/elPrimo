@@ -11,6 +11,8 @@
 
         <p>Estatus del pedido: {{ pedido.estatus }}</p>
 
+        <a href="{% url 'Factura' factura.numero_factura %}" target="_blank" rel="noopener noreferrer">Imprimir factura</a>
+
     {% endfor %}
 
 

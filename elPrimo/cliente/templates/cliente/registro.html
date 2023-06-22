@@ -1,30 +1,75 @@
 {% extends "tienda/base.html" %}
+{% load static %}
 
 {% block content %}
 
-    <form method="POST" action="">
+<style>
 
-        <h2>Registro</h2>
+    .cuerpo{
+        font-family: 'Poppins', sans-serif;
+        font-weight: 300;
+        line-height: 1.7;
+        color: #ffeba7;
+        background-image: url({% static 'imagenes/decoraciones.jpg' %});
+        background-position: center;
+        background-size: cover;
+        backdrop-filter: blur(3px);
+}
 
-        {% csrf_token %}
+</style>
+<div class="cuerpo">
+<div class="section">
+    <div class="container">
+        <div class="row full-height justify-content-center">
+            <div class="col-12 text-center align-self-center py-5">
+                <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                    <div class="card-3d-wrap mx-auto">
+                        <div class="card-3d-wrapper">
+                            <div class="card-front">
+                                <div class="center-wrap">
+                                    <div class="section text-center">
+                                        <h4 class="mb-3 pb-3">Registrate</h4>
 
-        {% for field in form %}
+                                        <form action="" method="POST">
 
-        <p>
-            {% if field.errors %}
-            <ul class="errorlist">
-                {% for error in field.errors %}
-                <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-             {{ field.label_tag }} {{ field }}
-        </p>
-        {% endfor %}
+                                            {% csrf_token %}
+                                        <div class="form-group">
+                                            <input type="text" class="form-style" placeholder="Nombre completo" name="nombre">
+                                            <i class="input-icon uil uil-user"></i>
+                                        </div>
+                            <div class="form-group mt-2">
+                                            <input type="email" class="form-style" placeholder="Email" name="correo">
+                                            <i class="input-icon uil uil-at"></i>
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <span class="eyes-2"><i class="fa-regular fa-eye-slash"></i></span>
+                                            <input type="password" class="form-style" placeholder="Contraseña" name="password1">
+                                            <i class="input-icon uil uil-lock-alt"></i>
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <span class="eyes"><i class="fa-regular fa-eye-slash"></i></span>
+                                            <input type="password" class="form-style" placeholder="Validar contraseña" name="password2">
+                                            <i class="input-icon uil uil-lock-alt"></i>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Enviar</button>
 
-        <input type="submit">
 
-    </form>
+                                    </form>
+
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+    </div>
+</div>
+
+<script src="{% static 'js/main.js' %}"></script>
+</div>
+
 
 {% endblock %}
 

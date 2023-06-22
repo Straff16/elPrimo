@@ -3,17 +3,41 @@
 
 {% block content %}
 
-    <p>Lista de Pedidos</p>
+    <h3 style="text-align: center;">Lista de pedidos</h3>
+    
+        {% for factura, pedido in pedidos %}
 
-    {% for factura, pedido in pedidos %}
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col"># De factura</th>
+                <th scope="col">Estatus del pedido</th>
+                <th scope="col">Factura</th>
+                <th scope="col">Fecha de emision</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">{{ factura.numero_factura }}</th>
+                <td>{% if pedido.estatus %} Sin entregar {% else %} Entregado {% endif %}</td>
 
-        <p>Numero de pedido: {{ factura.numero_factura }}</p>
+                <td>
+                <a href="{% url 'Factura' factura.numero_factura %}" target="_blank" rel="noopener noreferrer">
+                Imprimir factura
+                </a>
+                </td>
 
-        <p>Estatus del pedido: {{ pedido.estatus }}</p>
+                <td>
+                    {{ factura.fecha_emision }}
+                </td>
+              </tr>
+          </table>
 
-        <a href="{% url 'Factura' factura.numero_factura %}" target="_blank" rel="noopener noreferrer">Imprimir factura</a>
+        {% endfor %}
 
-    {% endfor %}
+
+
+
 
 
 {% endblock %}

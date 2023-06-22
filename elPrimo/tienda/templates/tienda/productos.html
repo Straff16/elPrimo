@@ -1,0 +1,68 @@
+{% extends "./base.html" %}
+
+
+{% block content %}
+
+
+<section class="container-3">
+
+        <!-- Categorias -->
+
+        <div class="categorias">
+                <a href="{% url 'tienda' %}" style="color: inherit;">
+                        <h2 class="titulo-categoria">Categorias</h2>
+                </a>
+            <ul>
+                {% for categoria in categorias %}
+            <li><a href="{% url 'productos' categoria.nombre_categoria %}" class="revestimiento-pared"> {{ categoria.nombre_categoria }} </a></li>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+
+<div class="productos container-5">
+
+        {% if nombre_categoria %}
+
+                <h2 class="titulo-product">Productos de {{ nombre_categoria.nombre_categoria }}</h2>
+
+        {% else %}
+
+                <h2 class="titulo-product">Productos</h2>
+
+        {% endif %}
+
+
+        <div class="container-items">
+
+        {% for producto in productos %}
+
+        <a href="{% url 'producto' producto.nombre_prod %}" style="color: inherit;">
+
+                        <div class="item">
+
+                                <span class="titulo-item">{{ producto.nombre_prod }}</span>
+
+                                
+                                <img src="{{ producto.imagen.url }}" class="img-item" alt="">
+                                <span class="precio-item">${{ producto.precio}}</span>
+                                
+                                <button class="boton-infor">Informacion</button>
+                                
+
+                        </div>
+
+        </a>
+
+        {% endfor %}
+
+        </div>
+
+</div>
+
+</section>
+
+{% endblock %}
+
+

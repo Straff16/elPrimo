@@ -10,6 +10,9 @@ class Usuario(models.Model):
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
 
+    def __str__(self) -> str:
+        return self.nombre_usuario
+
 class Info_Usuario(models.Model):
     municipio = models.CharField(max_length=50)
     urbanizacion = models.CharField(max_length=50)
@@ -17,3 +20,6 @@ class Info_Usuario(models.Model):
     telefono = models.CharField(max_length=12 ,unique=True)
     direccion = models.TextField(max_length=150)
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.id_usuario.nombre_usuario

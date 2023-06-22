@@ -8,12 +8,11 @@ from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 import random
+from pyDolarVenezuela import price
 #from cliente.models import Usuario
 
 
 def Addcarro(usuario_id, producto, cantida):
-
-    #usuario_id = request.session.get('user_id')
 
     aux = Carro.objects.filter(cliente = usuario_id, pagado = False).first()
 
@@ -26,31 +25,6 @@ def Addcarro(usuario_id, producto, cantida):
         items.cantidad = int(cantida)
         items.save()
 
-        """
-        usuario_id = request.session.get('user_id')
-        aux = Carro.objects.filter(cliente = usuario_id, pagado = False).first()
-        #prod = Producto.objects.get(id = id_producto)
-        #print(f'AUXILIAR {aux.id}')
-
-        items = ItemsCarro.objects.filter(Idcarro = aux.id, producto = id_producto).first()
-        #print(items)
-        if not items:
-            ItemsCarro(Idcarro = aux, producto = Producto.objects.get(id = id_producto)).save()
-
-        else:
-            items.cantidad += 1
-            items.save()
-        """
-        '''for i in items:
-            print(i.id)
-            if id_producto == i.id:
-                print(f'CANTIDAD {i.cantidad}')
-                i.cantidad += 1
-                flag = 1
-                i.save()
-        if flag == 0:
-            ItemsCarro(Idcarro = aux, producto = Producto.objects.get(id=id_producto)).save()'''
-        
     return redirect('Vercarro')
     
 def Vercarro(request):    
@@ -65,18 +39,20 @@ def Vercarro(request):
          productos = Producto.objects.filter(id__in = ids).all()
 
          lista = zip(productos, items)
-         #print(items)
 
          for k, j in lista:
-             #print(k.nombre_prod)
              total += (k.precio * j.cantidad)
 
          if request.POST:
              print(request.POST.get('cantidad'))
-         
+         separar = price().get('$bcv')
+         dolar = separar.split(' ')[1]
+         print(dolar)
+         total_bolivares = float(dolar)*total
          context = {
              'contexto': zip(productos, items),
              'total': total,
+             'dolar': total_bolivares
          }
 
          request.session['total'] = total
@@ -144,8 +120,10 @@ def pedidos(request):
     encabezado = Encabezado_Factura.objects.filter(id_cliente = cliente).all()
     #Guardar en una lista todas las ids de las facturas
     ids = [p.id for p in encabezado]
+    print(len(ids))
     #Obtener todos los pedidos de un cliente usando la lista de ids de facturas y que el estatus sea false
-    pedidos = Pedido.objects.filter(id_encabezado__in = ids, estatus = False).all()
+    pedidos = Pedido.objects.filter(id_encabezado__in = ids).all()
+    print(len(pedidos))
     contexto = zip(encabezado, pedidos)
     return render(request, 'carrito/pedidos.html', {'pedidos': contexto})
 
@@ -157,23 +135,54 @@ def factura(request, numero_factura):
 '''
 
 def facturapdf(request, numero_factura):
-    if request.session.get('username') is not None:
+    if 'usuario' in request.session:
         factura = Encabezado_Factura.objects.get(numero_factura = numero_factura)
+        cliente = Usuario.objects.filter(id = request.session.get('user_id')).first()
         detalle = Detalle_factura.objects.filter(id_encabezado = factura).all()
-        pdf = render_to_pdf('carrito/factura.html', {'factura': factura, 'detalle': detalle})
+
+        lista = list()
+        cantidad = list()
+        for i in detalle:
+            lista.append(i.id_prod.nombre_prod)
+            cantidad.append(i.cantidad)
+
+
+        productos = Producto.objects.filter(nombre_prod__in = lista).all()
+
+        iva = (factura.dolar * factura.total)*0.16
+        
+        bolivares = factura.dolar * factura.total
+
+        total = iva + bolivares
+
+        contexto = {
+            'factura': factura,
+            'productos': zip(productos, detalle),
+            'cliente': cliente,
+            'iva': iva,
+            'bolivares': bolivares,
+            'total': total
+        }
+
+        pdf = render_to_pdf('carrito/factura.html', contexto)
         return HttpResponse(pdf, content_type='application/pdf')
     else:
         return redirect('login')
 
 def registroPago(cliente, despacho, total, carro, correo, flete) -> None:
     numero = random.getrandbits(32)
+
+    separar = price().get('$bcv')
+    dolar = separar.split(' ')[1]
+
     encabezado = Encabezado_Factura(
         numero_factura = numero,
         id_cliente = cliente,
         iva = 12,
         flete = flete,
         total = total,
-        direccion_despacho = despacho
+        direccion_despacho = despacho,
+        dolar = dolar
     ).save()
 
     encabezado = Encabezado_Factura.objects.get(numero_factura = numero)
@@ -196,7 +205,7 @@ def registroPago(cliente, despacho, total, carro, correo, flete) -> None:
 
 def enviarEmail(encabezado, detalle, correo):
     asunto = 'Compra confirmada'
-    html_message = render_to_string('carrito/correo.html', {'factura': encabezado, 'detalle': detalle})
+    html_message = render_to_string('carrito/factura.html', {'factura': encabezado, 'detalle': detalle})
     plain_message = strip_tags(html_message)
     from_email = 'From elprimosa24@gmail.com'
     to = correo

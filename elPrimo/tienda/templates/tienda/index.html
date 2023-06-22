@@ -1,0 +1,28 @@
+{% extends "./base.html" %}
+{% load static %}
+{% block content %}
+
+    <section class="section-container">
+
+        <div class="derecha">
+
+            <h1 class="text-dere">Te damos la Bienvenida a Nuestro sitio Web</h1>
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eos, autem praesentium? Ratione quibusdam cumque excepturi praesentium esse facilis nostrum reiciendis, maiores at! Deleniti tempora perspiciatis, consequuntur doloribus explicabo eveniet amet!</p>
+            <a href="{% url 'productos' 'Construccion' %}">Ir a la tienda</a>
+
+        </div>
+
+        <div class="izquierda" 
+        style="width: 60%;
+        height: 490px;
+        background-image: url({% static 'imagenes/decoraciones.jpg' %});
+        background-size: cover;
+        background-position: center;
+        clip-path: polygon(100% 0, 100% 50%, 100% 100%, 0% 100%, 20% 50%, 0% 0%);">
+        </div>
+
+    </section>
+
+    
+    
+{% endblock %}

@@ -1,3 +1,54 @@
-<h1>Factura</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Python Guides</title>
+    <style>
+        p{
 
-<p>Numero de factura: {{ factura.numero_factura }}</p>
+            font-size: 15px;
+        }
+        h1 {
+          text-align: center;
+          font-size: 20px;
+        }
+        td, th {
+          text-align: center;
+          font-size: 20px;
+        }
+      </style>
+</head>
+<body>
+    
+      <h1>Factura #{{ factura.numero_factura }}</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Precio unitario</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for producto, detalle in productos %}
+            <tr>
+              <td>{{ producto.nombre_prod }}</td>
+              <td>{{ producto.precio }}</td>
+              <td>{{ detalle.cantidad }}</td>
+              <td>{% widthratio producto.precio 1 detalle.cantidad %}</td>
+            </tr>
+          {% endfor %}    
+        </tbody>
+      </table>
+ 
+      <h3>Total: </h3>
+      <p>En dolares: ${{ factura.total }}</p>
+      <p>En Bolivares: Bs.{{ bolivares }}</p>
+      <p>IVA 16%: Bs.{{ iva }}</p>
+      <p>Total: Bs.{{ total }}</p>
+
+</body>
+</html>

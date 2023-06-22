@@ -1,0 +1,43 @@
+{% extends "./base.html" %}
+
+        
+{% block content %}
+
+    <!--
+    {% for categoria in categorias %}
+
+        <h3>Productos de {{categoria.nombre_categoria}}</h3>
+
+        <a href="{% url 'productos' categoria.nombre_categoria %}">
+
+            <p>{{categoria.nombre_categoria}}</p>
+
+            <img src="{{ categoria.imagen_categoria.url }}" alt="">
+
+
+        </a>
+
+
+    {% endfor %}
+
+    -->
+
+    <div class="row row-cols-1 row-cols-md-2 g-4" style="width: 1200px; margin: auto;">
+    
+        {% for categoria in categorias %}
+            <a href="{% url 'productos' categoria.nombre_categoria%}" style="color: inherit;">
+            <div class="col">
+              <div class="card">
+                <img src="{{ categoria.imagen_categoria.url }}" class="card-img-top"
+                  alt="" />
+                <div class="card-body">
+                  <h5 class="card-title">{{ categoria.nombre_categoria }}</h5>
+                </div>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+
+    </div>
+{% endblock %}
+

@@ -1,0 +1,93 @@
+{% extends "tienda/base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+  <style>
+
+		.cuerpo{
+			font-family: 'Poppins', sans-serif;
+			font-weight: 300;
+			line-height: 1.7;
+			color: #ffeba7;
+			background-image: url({% static 'imagenes/decoraciones.jpg' %});
+			background-position: center;
+			background-size: cover;
+			backdrop-filter: blur(3px);
+}
+
+  </style>
+<div class="cuerpo">
+	<div class="section">
+		<div class="container">
+			<div class="row full-height justify-content-center">
+				<div class="col-12 text-center align-self-center py-5">
+					<div class="section pb-5 pt-5 pt-sm-2 text-center">
+						<div class="card-3d-wrap mx-auto">
+							<div class="card-3d-wrapper">
+								<div class="card-front">
+									<div class="center-wrap">
+										<div class="section text-center">
+											<h4 class="mb-4 pb-3">Inicio de sesion</h4>
+											<form action=""  method="POST">
+
+												{% csrf_token %}
+												
+												<div class="form-group">
+													<input class="form-style" placeholder="Nombre de usuario" name="usuario">
+													<i class="input-icon uil uil-at"></i>
+												</div>	
+												<div class="form-group mt-2">
+													<span class="eyes"><i class="fa-regular fa-eye-slash"></i></span>
+													<input type="password" class="form-style" placeholder="Contraseña" name="password">
+													<i class="input-icon uil uil-lock-alt"></i>
+												</div>
+												<button type="submit" class="btn btn-primary" style="margin-top: 15px;">Iniciar sesion</button>
+
+											</form>
+				      					</div>
+			      					</div>
+			      				</div>
+			      			</div>
+			      		</div>
+			      	</div>
+		      	</div>
+	      	</div>
+	    </div>
+	</div>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</div>
+
+{% endblock %}
+
+
+<!--
+<div class="card-back">
+	<div class="center-wrap">
+		<div class="section text-center">
+			<h4 class="mb-3 pb-3">Sign Up</h4>
+			<div class="form-group">
+				<input type="text" class="form-style" placeholder="Full Name">
+				<i class="input-icon uil uil-user"></i>
+			</div>	
+			<div class="form-group mt-2">
+				<input type="tel" class="form-style" placeholder="Phone Number">
+				<i class="input-icon uil uil-phone"></i>
+			</div>	
+<div class="form-group mt-2">
+				<input type="email" class="form-style" placeholder="Email">
+				<i class="input-icon uil uil-at"></i>
+			</div>
+			<div class="form-group mt-2">
+				<span class="eyes-2"><i class="fa-regular fa-eye-slash"></i></span>
+				<input type="password" class="form-style" placeholder="Password">
+				<i class="input-icon uil uil-lock-alt"></i>
+			</div>
+			<a href="" class="btn mt-4">Register</a>
+		  </div>
+	  </div>
+  </div>
+
+-->

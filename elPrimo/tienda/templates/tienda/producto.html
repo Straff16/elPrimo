@@ -1,19 +1,22 @@
 {% extends "./base.html" %}
 
+<p>BBBBBBBBBBB</p>
+
 {% block content %}
 
     
-    <p>{{ producto.nombre_prod }}</p>
+    <h3 style="text-align: center;">{{ producto.nombre_prod }}</h3>
 
-    <img src="{{producto.imagen.url}}" alt="">
 
-    <!-- <a href="{% url 'Addcarro' producto.id %}">Agregar al carro</a> -->
+    <div class="card" style="width: 25rem; margin: auto;">
+        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="...">
+      </div>
 
     <form method="POST">
 
         {% csrf_token %}
 
-        <input type="text" name="cantidad" value="1">
+        <input type="text" name="cantidad" value="1" style="margin-left: 660px; margin-top: 40px; width: 100px;">
 
         <label for="cantidad">Unidades del producto que desea</label>
 

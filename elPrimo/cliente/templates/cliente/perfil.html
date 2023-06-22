@@ -6,13 +6,19 @@
     
     {% if user %}
 
+    <div style="text-align: center;">
+
         <h2>Perfil</h2>
 
-        <p>Nombre de usuario:  {{ user.nombre_usuario }} </p>
-        <p>Correo: {{ user.correo }}</p>
+        <h4>Nombre de usuario: {{ user.nombre_usuario }}</h4>
+        <h4>Correo: {{ user.correo }}</h4>
 
     {% endif %}
 
-    <a href="{% url 'direcciones' %}">Libreta de direcciones</a>
+    <a href="{% url 'direcciones' %}"><h4>Libreta de direcciones</h4></a> <br>
+
+    <a href="{% url 'logout' %}"><h4>Cerrar sesion</h4></a>
+
+    </div>
 
 {% endblock %}

@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = 'django-insecure-4*x*p(ws&8lu^kpzasjd)65$sf$^28f$$84$ibghlb7qe91txl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -77,6 +77,7 @@ WSGI_APPLICATION = 'elPrimo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+'''
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.mysql',
@@ -85,6 +86,19 @@ DATABASES = {
     'PORT': config('MYSQL_ADDON_PORT'),
     'USER': config('MYSQL_ADDON_USER'),
     'PASSWORD': config('MYSQL_ADDON_PASSWORD'),
+  }
+}
+'''
+
+
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'b68spifrq8ahhg8gqavp',
+    'HOST': 'b68spifrq8ahhg8gqavp-mysql.services.clever-cloud.com',
+    'PORT': '3306',
+    'USER': 'u0xyoszobnavzj3k',
+    'PASSWORD': 's3yS1XyDUq3nUuM3s72t',
   }
 }
 
@@ -141,5 +155,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = 'elprimosa24@gmail.com'
+EMAIL_HOST_PASSWORD = 'ixyvkruywudvldpq'
